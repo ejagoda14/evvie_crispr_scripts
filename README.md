@@ -13,11 +13,14 @@ The script will do as follows:
 
 1. unzip the 10x cell ranger outputs crispr_analysis.tar.gz and filtered_feature_bc_matrix.tar.gz
 2. call the script all_upstream_of_mast_read_edits9.22.23_double_check.R which computes guide assignments and creates the following output files
-   a. _protospacer_calls_per_cell.csv - final guide calls per cell formatted in the cellranger format
-   b. _guides_per_cell.txt - CBC x #guides assigned 
-   c. _per_guide_summary_table.txt - guide - number cells assigned - umi threshold used
-   d. _perturb_status.txt - binary matrix guide assignments in the form of CBC x guide
-   e. _Cells_per_guide.png - histogram of the number of cells assigned to each guide
-   f. _Guides_per_cell.png - histogram of the number of guides assigned to each cell
+   a. **_protospacer_calls_per_cell.csv** - final guide calls per cell formatted in the cellranger format
+   b. **_guides_per_cell.txt** - CBC x #guides assigned 
+   c. **_per_guide_summary_table.txt** - guide - number cells assigned - umi threshold used
+   d. **_perturb_status.txt** - binary matrix guide assignments in the form of CBC x guide
+   e. **_Cells_per_guide.png** - histogram of the number of cells assigned to each guide
+   f. **_Guides_per_cell.png** - histogram of the number of guides assigned to each cell
+   g. **_umi_threshold_hist_log10.png** - hisogram of number of minimum guide umis needed to assign each guide to a cell
+   h. **_assinged_vs_not_assinged_umis_cdf.png** - per cell CDF plot of ratio of guide umis per cell that were attributed to an assigned guide vs a non-assigned guide (ambient rna)
+   i. **_assinged_vs_not_assinged_umis_boxplot.png** - boxplot of ratio of guide umis per cell that were attributed to an assigned guide vs a non-assigned guide (ambient rna)
       
 4. modify the header of the "_perturb_status.txt" to make it useable for the MAST snakemake
