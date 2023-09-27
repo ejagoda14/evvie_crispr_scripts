@@ -12,8 +12,12 @@ sbatch guide_assignment_9.26.23_w_tar_and_reformat_perturb.sh 230327_Encode_Tap_
 The script will do as follows:
 
 1. unzip the 10x cell ranger outputs crispr_analysis.tar.gz and filtered_feature_bc_matrix.tar.gz
-2. call the script all_upstream_of_mast_read_edits9.22.23_double_check.R which computes guide assignments and creates the following output files described below:
+2. call the script all_upstream_of_mast_read_edits9.22.23_double_check.R which computes guide assignments and creates the following output files described below
+3. modify the header of the "_perturb_status.txt" to make it useable for the MAST snakemake
 
+
+
+_output files from step 2_
 1. **_protospacer_calls_per_cell.csv** - final guide calls per cell formatted in the cellranger format
 2. **_guides_per_cell.txt** - CBC x #guides assigned
 3. **_per_guide_summary_table.txt** - guide - number cells assigned - umi threshold used
@@ -23,7 +27,4 @@ The script will do as follows:
 7. **_umi_threshold_hist_log10.png** - hisogram of number of minimum guide umis needed to assign each guide to a cell
 8. **_assinged_vs_not_assinged_umis_cdf.png** - per cell CDF plot of ratio of guide umis per cell that were attributed to an assigned guide vs a non-assigned guide (ambient rna)
 9. **_assinged_vs_not_assinged_umis_boxplot.png** - boxplot of ratio of guide umis per cell that were attributed to an assigned guide vs a non-assigned guide (ambient rna)
-   
-4. modify the header of the "_perturb_status.txt" to make it useable for the MAST snakemake
-
 
