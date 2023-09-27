@@ -21,7 +21,7 @@ _output files from step 2_
 3. **_per_guide_summary_table.txt** - guide - number cells assigned - umi threshold used
 4. **_perturb_status.txt** - binary matrix guide assignments in the form of CBC x guide
 5. **_Cells_per_guide.png** - histogram of the number of cells assigned to each guide
-6. **Guides_per_cell.png** - histogram of the number of guides assigned to each cell
+6. **_Guides_per_cell.png** - histogram of the number of guides assigned to each cell
 7. **_umi_threshold_hist_log10.png** - hisogram of number of minimum guide umis needed to assign each guide to a cell
 8. **_assinged_vs_not_assinged_umis_cdf.png** - per cell CDF plot of ratio of guide umis per cell that were attributed to an assigned guide vs a non-assigned guide (ambient rna)
 9. **_assinged_vs_not_assinged_umis_boxplot.png** - boxplot of ratio of guide umis per cell that were attributed to an assigned guide vs a non-assigned guide (ambient rna)
