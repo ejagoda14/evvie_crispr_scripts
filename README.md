@@ -6,11 +6,10 @@ guide_assignment_9.26.23_w_tar_and_reformat_perturb.sh is a bash script designed
 
 sbatch guide_assignment_9.26.23_w_tar_and_reformat_perturb.sh SAMPLE_NAME PATH_to_10x_DIR_ENDING_IN/ MIN_GUIDE_UMI_THRESHOLD Y_N_USE_10x_GUIDE_CALLS Y_N_Testing
 
-For example:
+**For example:**
 sbatch guide_assignment_9.26.23_w_tar_and_reformat_perturb.sh 230327_Encode_Tap_MOI5_sample7_novaseq_and_qc_seq /oak/stanford/groups/engreitz/Users/ejagoda/230327_Encode_K562_Tap_seq_full_seq/230327_Encode_Tap_MOI5_sample7_novaseq_and_qc_seq/ 2 yes no
 
-The script will do as follows:
-
+**The script will do as follows:**
 1. unzip the 10x cell ranger outputs crispr_analysis.tar.gz and filtered_feature_bc_matrix.tar.gz
 2. call the script all_upstream_of_mast_read_edits9.22.23_double_check.R which computes guide assignments and creates the following output files described below
 3. modify the header of the "_perturb_status.txt" to make it useable for the MAST snakemake
