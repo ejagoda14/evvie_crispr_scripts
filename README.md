@@ -2,7 +2,7 @@
 
 guide_assignment_9.26.23_w_tar_and_reformat_perturb.sh is a bash script designed to take the output of a 10x cell ranger analysis of a CRISPRi dataset, compute guide assignmnet, produce guide assignment QCs, and create output files for downstream processes. 
 
-The script can be run on a slurm-based system as follows:
+**The script can be run on a slurm-based system as follows:**
 
 sbatch guide_assignment_9.26.23_w_tar_and_reformat_perturb.sh SAMPLE_NAME PATH_to_10x_DIR_ENDING_IN/ MIN_GUIDE_UMI_THRESHOLD Y_N_USE_10x_GUIDE_CALLS Y_N_Testing
 
@@ -14,7 +14,6 @@ The script will do as follows:
 1. unzip the 10x cell ranger outputs crispr_analysis.tar.gz and filtered_feature_bc_matrix.tar.gz
 2. call the script all_upstream_of_mast_read_edits9.22.23_double_check.R which computes guide assignments and creates the following output files described below
 3. modify the header of the "_perturb_status.txt" to make it useable for the MAST snakemake
-
 
 
 _output files from step 2_
