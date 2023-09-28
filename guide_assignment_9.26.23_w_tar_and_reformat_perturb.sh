@@ -29,7 +29,7 @@ else
 fi	
 
 
-Rscript /oak/stanford/groups/engreitz/Users/ejagoda/updated_crispri_scripts/all_upstream_of_mast_read_edits9.22.23_double_check.R $1 $2 $3 $4 $5
+Rscript all_upstream_of_mast_read_edits9.22.23_double_check.R $1 $2 $3 $4 $5
 
 #sed -i 's/\./-/g' ${2}/outputs/${1}_perturb_status.txt
 
