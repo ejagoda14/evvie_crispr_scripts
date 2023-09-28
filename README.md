@@ -10,9 +10,9 @@ sbatch guide_assignment_9.26.23_w_tar_and_reformat_perturb.sh _SAMPLE_NAME_ _PAT
 
 sbatch guide_assignment_9.26.23_w_tar_and_reformat_perturb.sh 230327_Encode_Tap_MOI5_sample7_novaseq_and_qc_seq /oak/stanford/groups/engreitz/Users/ejagoda/230327_Encode_K562_Tap_seq_full_seq/230327_Encode_Tap_MOI5_sample7_novaseq_and_qc_seq/ 2 yes no
 
-**The script will do as follows:**
+**The script will do as follows:*, 
 1. unzip the 10x cell ranger outputs crispr_analysis.tar.gz and filtered_feature_bc_matrix.tar.gz
-2. call the script all_upstream_of_mast_read_edits9.22.23_double_check.R which computes guide assignments and creates the following output files described below
+2. call the script all_upstream_of_mast_read_edits9.22.23_double_check.R which computes guide assignments and creates the output files described below. If the Y_N_USE_10x_GUIDE_CALLS flag is set to "no", guide assignmnets will be made uniformly based on the minimum umi trehshold which can be adjusted in the MIN_GUIDE_UMI_THRESHOLD theshold flag (default = 2). If the  Y_N_USE_10x_GUIDE_CALLS flag is set to "yes", guide asssignments will be primarly based on the 10x calls, unless the guide threshold is less than the minimum threshold in which case the minimum threshold will be used. To strictly follow the 10x guide calls, set the guide umi threshold to 1. 
 3. modify the header of the "_perturb_status.txt" to make it useable for the MAST snakemake
 
 
