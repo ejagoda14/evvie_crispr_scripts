@@ -11,6 +11,13 @@ use_10x_calls = args[4] #yes/no --> if no, need a min_thresh
 testing = args[5]
 #testing = "no" #set auto to no later
 
+#sample = "moi5_freshB"
+#DATADIR = "/Users/ejagoda/Documents/HGRM/Crispri/230901_WTC11_ENCODE_DC_TAP_MOI5_FreshvsFrozen/Outputs_cellranger/Fresh-MOI5B/"
+#min_thresh = 2
+#use_10x_calls = "yes"
+#testing = "yes" #only flag for testing to do first 100 guides
+#source("/Users/ejagoda/Documents/HGRM/Crispri/Crispr_enhancer_analysis_tap_perturb_etc/v3/fromHelen_DC/seurat_functions.R") 
+
 suppressPackageStartupMessages({
   library(Seurat)
   library(SeuratObject)
@@ -23,17 +30,24 @@ suppressPackageStartupMessages({
   library(grid)
 })
 
-source("seurat_functions.R") 
+source("/oak/stanford/groups/engreitz/Users/ejagoda/seurat_functions.R") 
 
 output_path = paste0(DATADIR,"/outputs/")
 if (file.exists(output_path) == F){
   dir.create(output_path)
 }
 
+#if tar on computer
+#filtered_feature_bc_matrix_path = paste0(DATADIR,"/filtered_feature_bc_matrix/")
+#crisprdir =  paste0(DATADIR,"/crispr_analysis/")
+
+#if tar on server
+
 filtered_feature_bc_matrix_path = paste0(DATADIR)
 crisprdir =  paste0(DATADIR)
 
-#chekcing inputs and applying defaults
+
+##guide assignment
 if (exists("min_thresh") == F){
   min_thresh = 2
 }
@@ -46,6 +60,7 @@ if (exists("use_10x_calls") == F & file.exists(crisprdir) == F){
   use_10x_calls = "no"
 }
 
+
 cat(paste0("found crispr directory (", crisprdir, "): ", file.exists(crisprdir),"\nusing thresholds from 10x cell ranger file: ",use_10x_calls,"\nmin threshold: ",min_thresh,"\noutput dir: ",output_path,"\n"))
 
 if (exists("use_10x_calls") == "yes" & file.exists(crisprdir) == F){
@@ -53,7 +68,7 @@ if (exists("use_10x_calls") == "yes" & file.exists(crisprdir) == F){
   break
 }
 
-#Read in guide and GEX matrices
+
 mtx <- Read10X(filtered_feature_bc_matrix_path)
 if(class(mtx) == "list") {
   message("Loading Gene Expression Matrix and Guide Capture Matrix")
@@ -64,14 +79,13 @@ if(class(mtx) == "list") {
   gex.mtx <- mtx
 }
 
-#if in testing mode, using on the first 100 guides
 if (testing == 'yes'){
   guide.mtx_cp = guide.mtx[1:100,]
 } else{
   guide.mtx_cp = guide.mtx
 }
 
-#Assign guides using 10x calls
+
 if (use_10x_calls == "yes"){
 thresh_file = read.table(paste0(crisprdir,"protospacer_umi_thresholds.csv"),header=T,sep = ',')
 
@@ -107,7 +121,7 @@ for (i in 1:nrow((guide.mtx_cp))){
 }
 }
 
-#Assign guides without 10x calls
+
 if (use_10x_calls == "no"){
   thresh_use = min_thresh
   cells_per_guide = c()
@@ -142,7 +156,6 @@ per_guide_summary_table = data.frame(cbind(row.names(guide.mtx_cp),cells_per_gui
 colnames(per_guide_summary_table) = c("guide","cells","UMI.threshold")
 write.table(per_guide_summary_table,paste0(output_path,sample,"calls_based_on_10x_",use_10x_calls,"min_thresh_",min_thresh,"_per_guide_summary_table.txt"),quote = F,sep = '\t',row.names  = F)
 
-#plot guide umi thresholds
 png(paste0(output_path,sample,"calls_based_on_10x_",use_10x_calls,"min_thresh",min_thresh,"_Guide_umi_threshold_hist_log10.png"))
 p = ggplot(per_guide_summary_table,aes(x = log10(as.numeric(paste0(UMI.threshold)))))+
   geom_histogram(bins = 50)+
@@ -157,7 +170,6 @@ p = ggplot(per_guide_summary_table,aes(x = log10(as.numeric(paste0(UMI.threshold
 print(p)
 dev.off()
 
-#plot cells per guide
 png(paste0(output_path,sample,"calls_based_on_10x_",use_10x_calls,"min_thresh",min_thresh,"_Cells_per_guide.png"))
 p = ggplot(per_guide_summary_table,aes(x = as.numeric(paste0(cells))))+
   geom_histogram()+
@@ -177,8 +189,7 @@ row.names(guides_per_cell) = NULL
 
 write.table(guides_per_cell,paste0(output_path,sample,"calls_based_on_10x_",use_10x_calls,"min_thresh",min_thresh,"_guides_per_cell.txt"),quote = F,sep = '\t')
 
-#plot guides per cell
-png(paste0(output_path,sample,"_Guides_per_cell.png"))
+png(paste0(output_path,sample,"calls_based_on_10x_",use_10x_calls,"min_thresh",min_thresh,"_Guides_per_cell.png"))
 p = ggplot(guides_per_cell,aes(x = total_guides))+
   geom_histogram()+
   labs(title = paste0(sample,"\nGuides per cell\nMean = ",round(mean(as.numeric(paste0(guides_per_cell$total_guides))),3),
@@ -188,7 +199,9 @@ print(p)
 dev.off()
 
 
-#testing trying to get umis assigned per ambient vs assigned
+
+##end guide assignment
+#testing trying to get umis per ambient vs assigned
 
 get_assigned_guides = function(cell){
   guides = rownames(guide.mtx_cp)[which(guide.mtx_cp[,cell] == 1)]
@@ -203,7 +216,7 @@ colnames(guide_calls_tab) = c("CBC","assigned_guides")
 
 protospacer_calls_per_cell_tab = merge(guide_calls_tab,guides_per_cell)
 colnames(protospacer_calls_per_cell_tab) = c("cell_barcode","feature_call","num_features")
-write.table(protospacer_calls_per_cell_tab[,c(1,3,2)],paste0(output_path,sample,"protospacer_calls_per_cell.csv"),row.names = F,quote = F,sep = ",")
+write.table(protospacer_calls_per_cell_tab[,c(1,3,2)],paste0(output_path,sample,"calls_based_on_10x_",use_10x_calls,"min_thresh",min_thresh,"protospacer_calls_per_cell.csv"),row.names = F,quote = F,sep = ",")
 
 get_umis_assigned = function(cell){
   guides = rownames(guide.mtx_cp)[which(guide.mtx_cp[,cell] == 1)]
@@ -223,25 +236,26 @@ not_assigned_umis_list = sapply(colnames(guide.mtx_cp),get_umis_not_assigned)
 umis_tab = data.frame(cbind(colnames(guide.mtx_cp),assigned_umis_list,not_assigned_umis_list))
 row.names(umis_tab) = NULL
 colnames(umis_tab)[1] = "CBC"
-umis_tab$ratio = as.numeric(paste0(umis_tab$assigned_umis_list))/as.numeric(paste0(umis_tab$not_assigned_umis_list))
+#umis_tab$ratio = as.numeric(paste0(umis_tab$assigned_umis_list))/as.numeric(paste0(umis_tab$not_assigned_umis_list))
+umis_tab$fraction_assigned = as.numeric(paste0(umis_tab$assigned_umis_list))/(as.numeric(paste0(umis_tab$assigned_umis_list)) +as.numeric(paste0(umis_tab$not_assigned_umis_list)))
 
-png(paste0(output_path,sample,"calls_based_on_10x_",use_10x_calls,"min_thresh",min_thresh,"_assinged_vs_not_assinged_umis_cdf.png"))
-p = ggplot(umis_tab,aes(x = log10(ratio)))+
+png(paste0(output_path,sample,"calls_based_on_10x_",use_10x_calls,"min_thresh",min_thresh,"_fraction_assigned_cdf.png"))
+p = ggplot(umis_tab,aes(y = fraction_assigned))+
   stat_ecdf()+
-  xlab("Assigned guide umis/non-assigned guide umis")+
+  xlab("Fraction Guide umis assigned")+
   ylab("Fraction of cells")+
-  labs(title = paste0(sample," Assinged vs ambient guide umis(log10) \nFractions cells ratio < 1: ",round(nrow(umis_tab[umis_tab$ratio < 1,])/nrow(umis_tab),3),"\nmean (cells with at least 1 umi): ", mean(umis_tab[umis_tab$not_assigned_umis_list != "0" | umis_tab$assigned_umis_list != "0","ratio"]),
-                      "\nmedian (cells with at least 1 umi) : ",round(median(umis_tab[umis_tab$not_assigned_umis_list != "0" | umis_tab$assigned_umis_list != "0","ratio"]),3),
+  labs(title = paste0(sample,"\nFraction Umis assigned \nFractions cells < 50%: ",round(nrow(umis_tab[umis_tab$fraction_assigned < .5,])/nrow(umis_tab),3),"\nmean (cells with at least 1 umi): ", mean(umis_tab[umis_tab$not_assigned_umis_list != "0" | umis_tab$assigned_umis_list != "0","fraction_assigned"]),
+                      "\nmedian (cells with at least 1 umi) : ",round(median(umis_tab[umis_tab$not_assigned_umis_list != "0" | umis_tab$assigned_umis_list != "0","fraction_assigned"]),3),
                       "\ncells with no umis: ",nrow(umis_tab[umis_tab$not_assigned_umis_list == "0" & umis_tab$assigned_umis_list == "0",])))
 print(p)
 dev.off()
 
 png(paste0(output_path,sample,"calls_based_on_10x_",use_10x_calls,"min_thresh",min_thresh,"_assinged_vs_not_assinged_umis_boxplot.png"))
-p = ggplot(umis_tab,aes(y = log10(ratio)))+
+p = ggplot(umis_tab,aes(y = fraction_assigned))+
   geom_boxplot()+
-  ylab("log 10 Assigned guide umis/non-assigned guide umis")+
-  labs(title = paste0(sample," Assinged vs ambient guide umis(log10) \nFractions cells ratio < 1: ",round(nrow(umis_tab[umis_tab$ratio < 1,])/nrow(umis_tab),3),"\nmean (cells with at least 1 umi): ", mean(umis_tab[umis_tab$not_assigned_umis_list != "0" | umis_tab$assigned_umis_list != "0","ratio"]),
-                      "\nmedian (cells with at least 1 umi) : ",round(median(umis_tab[umis_tab$not_assigned_umis_list != "0" | umis_tab$assigned_umis_list != "0","ratio"]),3),
+  ylab("Fraction Guide umis assigned")+
+  labs(title = paste0(sample,"\nFraction Umis assigned \nFractions cells < 50%: ",round(nrow(umis_tab[umis_tab$fraction_assigned < .5,])/nrow(umis_tab),3),"\nmean (cells with at least 1 umi): ", mean(umis_tab[umis_tab$not_assigned_umis_list != "0" | umis_tab$assigned_umis_list != "0","fraction_assigned"]),
+                      "\nmedian (cells with at least 1 umi) : ",round(median(umis_tab[umis_tab$not_assigned_umis_list != "0" | umis_tab$assigned_umis_list != "0","fraction_assigned"]),3),
                       "\ncells with no umis: ",nrow(umis_tab[umis_tab$not_assigned_umis_list == "0" & umis_tab$assigned_umis_list == "0",])))
 print(p)
 dev.off()
