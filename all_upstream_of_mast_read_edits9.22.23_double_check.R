@@ -183,7 +183,7 @@ p = ggplot(guides_per_cell,aes(x = total_guides))+
   geom_histogram()+
   labs(title = paste0(sample,"\nGuides per cell\nMean = ",round(mean(as.numeric(paste0(guides_per_cell$total_guides))),3),
          "\nMedian = ",median(as.numeric(paste0(guides_per_cell$total_guides))),
-         "\nPerc 0 = ", 100*round(length(guides_per_cell[as.numeric(paste0(guides_per_cell$total_guides)) == 0,])/nrow(guides_per_cell),3),"%"))
+         "\nPerc 0 = ", 100*round(nrow(guides_per_cell[as.numeric(paste0(guides_per_cell$total_guides)) == 0,])/nrow(guides_per_cell),3),"%"))
 print(p)
 dev.off()
 
