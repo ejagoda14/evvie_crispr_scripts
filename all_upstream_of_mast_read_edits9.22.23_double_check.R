@@ -225,7 +225,7 @@ row.names(umis_tab) = NULL
 colnames(umis_tab)[1] = "CBC"
 umis_tab$ratio = as.numeric(paste0(umis_tab$assigned_umis_list))/as.numeric(paste0(umis_tab$not_assigned_umis_list))
 
-png(paste0(output_path,sample,"_assinged_vs_not_assinged_umis_cdf.png"))
+png(paste0(output_path,sample,"calls_based_on_10x_",use_10x_calls,"min_thresh",min_thresh,"_assinged_vs_not_assinged_umis_cdf.png"))
 p = ggplot(umis_tab,aes(x = log10(ratio)))+
   stat_ecdf()+
   xlab("Assigned guide umis/non-assigned guide umis")+
@@ -236,7 +236,7 @@ p = ggplot(umis_tab,aes(x = log10(ratio)))+
 print(p)
 dev.off()
 
-png(paste0(output_path,sample,"_assinged_vs_not_assinged_umis_boxplot.png"))
+png(paste0(output_path,sample,"calls_based_on_10x_",use_10x_calls,"min_thresh",min_thresh,"_assinged_vs_not_assinged_umis_boxplot.png"))
 p = ggplot(umis_tab,aes(y = log10(ratio)))+
   geom_boxplot()+
   ylab("log 10 Assigned guide umis/non-assigned guide umis")+
