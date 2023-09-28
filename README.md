@@ -4,7 +4,7 @@ guide_assignment_9.26.23_w_tar_and_reformat_perturb.sh is a bash script designed
 
 **The script can be run on a slurm-based system as follows:**
 
-sbatch guide_assignment_9.26.23_w_tar_and_reformat_perturb.sh SAMPLE_NAME PATH_to_10x_DIR_ENDING_IN/ MIN_GUIDE_UMI_THRESHOLD Y_N_USE_10x_GUIDE_CALLS Y_N_Testing
+sbatch guide_assignment_9.26.23_w_tar_and_reformat_perturb.sh _SAMPLE_NAME_ _PATH_to_10x_DIR_ENDING_IN/_ _MIN_GUIDE_UMI_THRESHOLD_ _Y_N_USE_10x_GUIDE_CALLS_ _Y_N_Testing_
 
 **For example:**
 sbatch guide_assignment_9.26.23_w_tar_and_reformat_perturb.sh 230327_Encode_Tap_MOI5_sample7_novaseq_and_qc_seq /oak/stanford/groups/engreitz/Users/ejagoda/230327_Encode_K562_Tap_seq_full_seq/230327_Encode_Tap_MOI5_sample7_novaseq_and_qc_seq/ 2 yes no
